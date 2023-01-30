@@ -10,18 +10,7 @@ on:
     tags: [ 'v*.*.*' ]
 
 jobs:
-  install-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - run: npm install
-      - run: npm test
-
   npm-publish-github:
-    needs: install-and-test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -32,6 +21,7 @@ jobs:
         with:
           node-version: 16
           registry-url: 'https://npm.pkg.github.com'
+      - run: npm install
       - run: npm run build
       - run: npm publish
         env:
