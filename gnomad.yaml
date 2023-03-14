@@ -1,0 +1,8 @@
+events:
+  namespaces:
+  - coded.claims
+  - creative.claims
+  - common.claims
+  - forever.claims
+  - sovereign.claims
+  - vendor.claims

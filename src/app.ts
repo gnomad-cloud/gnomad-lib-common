@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Application, Express } from 'express';
 import dotenv from 'dotenv';
 import yaml from './utils/yaml';
 import { I_Events, Events } from './utils/events';
@@ -7,7 +7,7 @@ import { Router } from "express";
 
 export interface I_AppContext {
     config: I_Config;
-    router: Router;
+    router: Application;
     events: I_Events;
 }
 
@@ -25,8 +25,6 @@ export interface I_Config {
 
 export default class Chassis {
     ctx: I_AppContext | null = null;
-    app: Express = express();
-    events = new Events();
 
     constructor() {
         this.boot();
@@ -39,23 +37,28 @@ export default class Chassis {
         const configFile = process.env.GNOMAD_YAML_PATH || "gnomad.yaml"
         const config = yaml(configFile) as I_Config;
 
+        const router: Express = express();
+        const events = new Events();
         // boot app context
-        this.ctx = { config, router: this.app, events: this.events } as I_AppContext;
+        this.ctx = { config, router, events } as I_AppContext;
+    }
+
+    _assert_booted() {
+        if (!this.ctx) throw new Error("boot failed");
+        return true;
     }
 
     install(plugin: I_Plugin) {
+        this._assert_booted();
         if (this.ctx) plugin.install(this.ctx);
     }
 
     start() {
-        if (!this.ctx) throw new Error("boot failed");
-
-        const brand = this.ctx.config.brand;
+        this._assert_booted();
         const port = process.env.PORT || 3000;
-
         // start serving ...
-        this.app.listen(port, () => {
-            console.log(`chassis.boot '${brand.name}' on port ${port}`);
+        this.ctx?.router.listen(port, () => {
+            console.log(`chassis.api on port ${port}`);
         });
     }
 }
