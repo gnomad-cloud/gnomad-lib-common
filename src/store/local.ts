@@ -1,3 +1,5 @@
+const debug = require("debug")("fn:store:local")
+
 import { I_Store, I_StoredFile } from ".";
 
 export class LocalFileStore<T> implements I_Store<T> {

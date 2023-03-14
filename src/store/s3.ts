@@ -1,5 +1,6 @@
-import { I_Store, I_StoredFile } from ".";
+const debug = require("debug")("fn:store:s3")
 
+import { I_Store, I_StoredFile } from ".";
 
 export class S3Store<T> implements I_Store<T> {
 

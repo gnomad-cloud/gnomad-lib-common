@@ -1,9 +1,11 @@
-import { I_CloudEvent, I_Events } from "./events";
+const debug = require("debug")("fn:events:broker")
+
+import { I_CloudEvent, I_Broker } from ".";
 import { I_Store } from "../store";
 
-export class Broker implements I_Events {
+export class ProxyBroker implements I_Broker {
     
-    constructor(protected store: I_Store<any>, protected proxy: I_Events) {
+    constructor(protected store: I_Store<any>, protected proxy: I_Broker) {
         // initialized
     }
 

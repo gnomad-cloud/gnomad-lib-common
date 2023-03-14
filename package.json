@@ -24,6 +24,7 @@
     "devw": "set NODE_ENV=local && npx tsc && node dist/api.js"
   },
   "dependencies": {
+    "@keycloak/keycloak-admin-client": "^21.0.1",
     "accepts": "^1.3.8",
     "array-flatten": "^1.1.1",
     "body-parser": "^1.20.1",

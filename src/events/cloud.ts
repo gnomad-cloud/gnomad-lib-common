@@ -1,17 +1,9 @@
+const debug = require("debug")("fn:events:ce")
+
 import { httpTransport, emitterFor, CloudEvent } from "cloudevents";
+import { I_CloudEvent, I_Broker } from ".";
 
-export interface I_CloudEvent {
-    type: string;
-    source: string;
-    id: string;
-    data: any;
-}
-
-export interface I_Events {
-    fire(event: I_CloudEvent): Promise<unknown>
-}
-
-export class Events implements I_Events {
+export class EventBroker implements I_Broker {
     emit: Function;
 
     constructor() {
