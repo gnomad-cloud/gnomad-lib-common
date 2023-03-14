@@ -1,7 +1,7 @@
 import express, { Application, Express } from 'express';
 import dotenv from 'dotenv';
 import yaml from './utils/yaml';
-import { I_Broker, Events } from './events/cloud';
+import { I_Broker, EventBroker } from './events';
 
 export interface I_AppContext {
     config: I_Config;
@@ -36,7 +36,7 @@ export default class Chassis {
         const config = yaml(configFile) as I_Config;
 
         const router: Express = express();
-        const events = new Events();
+        const events = new EventBroker();
         // boot app context
         this.ctx = { config, router, events } as I_AppContext;
     }

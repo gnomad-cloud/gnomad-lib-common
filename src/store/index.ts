@@ -15,5 +15,28 @@ export interface I_Store<T> {
     delete(path: string): Promise<I_StoredFile<T>>
 }
 
+const debug = require("debug")("fn:utils:validate")
+
+export interface I_Schema {
+    id(): string;
+}
+
+export interface I_SchemaRegistry {
+    get(id: string): I_Schema;
+}
+
+export interface I_Valid {
+    valid: boolean;
+    schema: I_Schema;
+}
+
+export interface I_Invalid extends I_Valid {
+    errors: any;
+}
+
+export interface I_Validator {
+    validate(type: string, data: any): Promise<I_Valid|I_Invalid>
+}
+
 export { S3Store } from "./s3";
 export { LocalFileStore } from "./local";

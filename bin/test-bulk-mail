@@ -1,2 +1,0 @@
-curl -X POST http://localhost:3000/mail/bulk/example -d '[{"name": "Gypsy", "email": "gypsy@gnomad.cloud" }, {"name": "Gnomad", "email": "noreply@gnomad.cloud" }]' -H "Content-Type: application/json"
-

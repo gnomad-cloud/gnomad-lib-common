@@ -9,5 +9,5 @@ export interface I_Broker {
     fire(event: I_CloudEvent): Promise<unknown>
 }
 
-export { EventBroker } from "./generic"
+export { EventBroker } from "./cloud"
 export { ProxyBroker } from "./proxy"

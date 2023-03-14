@@ -1,3 +1,5 @@
+const debug = require("debug")("fn:store:validator")
+
 import { I_Validator, I_Valid, I_Invalid } from "."
 
 export default class Validator implements I_Validator {

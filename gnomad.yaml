@@ -6,3 +6,6 @@ events:
   - forever.claims
   - sovereign.claims
   - vendor.claims
+schema:
+  registry:
+  - ./schemas/
