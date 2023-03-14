@@ -3,7 +3,7 @@ const debug = require("debug")("fn:auth:keycloak")
 import KeycloakAdminClient from "@keycloak/keycloak-admin-client";
 import GroupRepresentation from "@keycloak/keycloak-admin-client/lib/defs/groupRepresentation";
 import { group } from "console";
-import { I_Authenticator, I_Entitlement } from ".";
+import { I_Authenticator, I_Entitlement, I_JWT } from ".";
 
 const KEYCLOAK_URL = process.env.KEYCLOAK_URL || "";
 if (!KEYCLOAK_URL) throw new Error("missing KEYCLOAK_URL");
@@ -26,24 +26,28 @@ export class KeycloakAuthenticator implements I_Entitlement{
         this.connect();
     }
 
-    async grant(subject: string, permission: string) {
-        return await this.addToGroup(permission, subject);
+    async grant(jwt: I_JWT, permission: string) {
+        return await this.addToGroup(permission, jwt.sub);
     }
 
-    async revoke(subject: string, permission: string) {
-        return this.removeFromGroup(permission, subject);
+    async revoke(jwt: I_JWT, permission: string) {
+        return this.removeFromGroup(permission, jwt.sub);
     }
 
-    async forget(subject: string) {
-        const user = await this.api.users.findOne( {id: subject });
-        if (!user) return Promise.reject({ error: true, subject});
+    async forget(jwt: I_JWT) {
+        const user = await this.api.users.findOne( {id: jwt.sub });
+        if (!user) return Promise.reject({ error: true, subject: jwt.sub});
         if (user.groups) {
             for(var i=0;i<user.groups.length;i++) {
                 var ug = user.groups[i];
-                await this.removeFromGroup(subject,ug);
+                await this.removeFromGroup(jwt.sub,ug);
             }
         }
-        return Promise.resolve({ id: subject });
+        return Promise.resolve({ id: jwt.sub });
+    }
+
+    allowed(jwt: I_JWT, permission: string): Promise<boolean> {
+        throw new Error("Method not implemented.");
     }
 
     async connect() {

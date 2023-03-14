@@ -3,8 +3,15 @@ export interface I_Authenticator {
 }
 
 export interface I_Entitlement {
-    grant(subject: string, permission: string): void;
-    revoke(subject: string, permission: string): void;
-    forget(subject: string): void;
+    allowed(jwt: I_JWT, permission: string): Promise<boolean>;
+
+    grant(jwt: I_JWT, permission: string): Promise<any>;
+    revoke(jwt: I_JWT, permission: string): Promise<any>;
+    forget(jwt: I_JWT): Promise<any>;
 }
 
+export interface I_JWT {
+    sub: string;
+    aud: string;
+    nbf: number;
+}
