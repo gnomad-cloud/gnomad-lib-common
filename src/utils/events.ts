@@ -1,13 +1,15 @@
 import { httpTransport, emitterFor, CloudEvent } from "cloudevents";
+import { UnknownObject } from "express-handlebars/types";
 
 export interface I_CloudEvent {
     type: string;
     source: string;
+    id: string;
     data: any;
 }
 
 export interface I_Events {
-    fire(event: I_CloudEvent): void
+    fire(event: I_CloudEvent): Promise<unknown>
 }
 
 export class Events implements I_Events {
@@ -24,10 +26,10 @@ export class Events implements I_Events {
         this.emit = emitterFor(httpTransport(CE_BROKER as string));
     }
 
-    fire(event: I_CloudEvent): void {
-        const { type, source, data } = event;
-        const ce = new CloudEvent({ type, source, data });
+    fire(event: I_CloudEvent): Promise<unknown> {
+        const { id, type, source, data } = event;
+        const ce = new CloudEvent({ id, type, source, data }, true);
         console.log("ce.emit: %o", ce);
-        this.emit(ce);
+        return this.emit(ce);
     }
 }
