@@ -2,7 +2,8 @@ const debug = require("debug")("fn:auth:keycloak")
 
 import KeycloakAdminClient from "@keycloak/keycloak-admin-client";
 import GroupRepresentation from "@keycloak/keycloak-admin-client/lib/defs/groupRepresentation";
-import { I_Authenticator } from ".";
+import { group } from "console";
+import { I_Authenticator, I_Entitlement } from ".";
 
 const KEYCLOAK_URL = process.env.KEYCLOAK_URL || "";
 if (!KEYCLOAK_URL) throw new Error("missing KEYCLOAK_URL");
@@ -13,7 +14,8 @@ if (!KEYCLOAK_CLIENT_ID || !KEYCLOAK_CLIENT_SECRET) throw new Error("missing KEY
 debug("keycloak.client: %s -> %s", KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET ? true : false)
 
 //  implements I_Authenticator
-export class KeycloakAuthenticator {
+export class KeycloakAuthenticator implements I_Entitlement{
+    
     api: KeycloakAdminClient;
     
     constructor(protected realm: string) {
@@ -22,6 +24,26 @@ export class KeycloakAuthenticator {
             realmName: realm,
         });
         this.connect();
+    }
+
+    async grant(subject: string, permission: string) {
+        return await this.addToGroup(permission, subject);
+    }
+
+    async revoke(subject: string, permission: string) {
+        return this.removeFromGroup(permission, subject);
+    }
+
+    async forget(subject: string) {
+        const user = await this.api.users.findOne( {id: subject });
+        if (!user) return Promise.reject({ error: true, subject});
+        if (user.groups) {
+            for(var i=0;i<user.groups.length;i++) {
+                var ug = user.groups[i];
+                await this.removeFromGroup(subject,ug);
+            }
+        }
+        return Promise.resolve({ id: subject });
     }
 
     async connect() {
