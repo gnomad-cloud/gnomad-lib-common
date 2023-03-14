@@ -1,3 +1,3 @@
-# Gnomad Bot - Common
+# generic promise-driven utilities
 
-A micro-service chassis that supports a simple plugin architecture.
+A set of generic utilities for use in light-weight server-less functions.

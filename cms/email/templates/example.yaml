@@ -1,4 +1,0 @@
-subject: Example Mail
-text: "Hi {{my.name}} - sent @ {{now}} "
-html: "<pre>Hi {{my.name}} - sent @ {{now}} </pre>"
-

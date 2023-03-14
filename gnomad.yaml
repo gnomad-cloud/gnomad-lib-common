@@ -1,9 +1,0 @@
-brand:
-  name: Gnomad Mailer
-
-mailer:
-  templates: "./cms/email/templates"
-  default:
-    from: noreply@gnomad.cloud
-
-smtp:
