@@ -1,9 +1,7 @@
 import express, { Application, Express } from 'express';
 import dotenv from 'dotenv';
 import yaml from './utils/yaml';
-import { I_Events, Events } from './utils/events';
-
-import { Router } from "express";
+import { I_Events, Events } from './events/events';
 
 export interface I_AppContext {
     config: I_Config;

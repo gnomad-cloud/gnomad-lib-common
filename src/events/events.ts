@@ -1,5 +1,4 @@
 import { httpTransport, emitterFor, CloudEvent } from "cloudevents";
-import { UnknownObject } from "express-handlebars/types";
 
 export interface I_CloudEvent {
     type: string;
