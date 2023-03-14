@@ -1,4 +1,4 @@
-import { I_AppContext, I_Plugin } from "../app";
+import { I_AppContext, I_Plugin } from "../api/app";
 import bodyParser from 'body-parser';
 import { Request, Response } from "express";
 

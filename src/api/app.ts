@@ -1,7 +1,7 @@
 import express, { Application, Express } from 'express';
 import dotenv from 'dotenv';
-import yaml from './utils/yaml';
-import { I_Broker, EventBroker } from './events';
+import yaml from '../utils/yaml';
+import { I_Broker, EventBroker } from '../events';
 
 export interface I_AppContext {
     config: I_Config;
