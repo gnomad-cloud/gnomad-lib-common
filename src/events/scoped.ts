@@ -12,17 +12,17 @@ export class ScopedEventBroker implements I_Broker {
         }
     }
 
-    add(name: string, proxy: I_Broker): void {
-        name = name || "*";
-        this.proxies[name] = proxy;
+    add(ns: string, proxy: I_Broker): void {
+        ns = ns || "*";
+        this.proxies[ns] = proxy;
     }
 
     async fire(event: I_CloudEvent): Promise<I_CloudEvent> {
         for(let ns in this.proxies) {
-            if (ns == "" || ns == "*") {
+            if (ns == "*") {
                 this.proxies[ns].fire(event);
-                console.log("fire.*: %s -> %s", event.type, event.id)
-            } else {
+                console.log("fire.all: %s -> %s", event.type, event.id)
+            } else if (ns) {
                 if (event.type.startsWith(ns)) {
                     this.proxies[ns].fire(event);
                     console.log("fire.type: %s -> %s -> %s", ns, event.type, event.id)
