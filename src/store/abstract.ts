@@ -1,4 +1,4 @@
-const debug = require("debug")("fn:store:local")
+const debug = require("debug")("gnomad:store:local")
 import path from "path"
 //import fs from "fs";
 import { createHash } from 'node:crypto'

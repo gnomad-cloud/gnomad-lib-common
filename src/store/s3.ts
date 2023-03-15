@@ -1,4 +1,4 @@
-const debug = require("debug")("fn:store:s3")
+const debug = require("debug")("gnomad:store:s3")
 
 import { I_Store, I_StoredFile } from ".";
 import { AbstractFileStore } from "./abstract";

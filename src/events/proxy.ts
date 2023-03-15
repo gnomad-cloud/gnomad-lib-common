@@ -1,4 +1,4 @@
-const debug = require("debug")("fn:events:broker")
+const debug = require("debug")("gnomad:events:broker")
 
 import { I_CloudEvent, I_Broker } from ".";
 import { I_Store } from "../store";

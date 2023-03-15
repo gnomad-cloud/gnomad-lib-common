@@ -1,4 +1,4 @@
-const debug = require("debug")("fn:store:local")
+const debug = require("debug")("gnomad:store:local")
 import path from "path"
 import fs from "fs";
 import { mkdirp } from 'mkdirp'
@@ -46,7 +46,7 @@ export class LocalFileStore<T> extends AbstractFileStore<T> {
         return meta;
     }
 
-    load(file: string): Promise<I_StoredFile<T>> {
+    async load(file: string): Promise<I_StoredFile<T>> {
         const folder = this.resolve(file);
         const meta = this.meta(file);
         console.log("store.local.load: %s", meta.filename);
@@ -57,7 +57,7 @@ export class LocalFileStore<T> extends AbstractFileStore<T> {
         return Promise.resolve({ path: meta.filename, data: loaded, status: 'active' })
     }
 
-    delete(file: string): Promise<I_StoredFile<T>> {
+    async delete(file: string): Promise<I_StoredFile<T>> {
         const filename = this.resolve(file);
         console.log("store.local.delete: %s", filename);
         fs.rmSync(filename);

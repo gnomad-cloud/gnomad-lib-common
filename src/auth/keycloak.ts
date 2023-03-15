@@ -1,4 +1,4 @@
-const debug = require("debug")("fn:auth:keycloak")
+const debug = require("debug")("gnomad:auth:keycloak")
 
 import KeycloakAdminClient from "@keycloak/keycloak-admin-client";
 import GroupRepresentation from "@keycloak/keycloak-admin-client/lib/defs/groupRepresentation";

@@ -2,13 +2,20 @@ const { I_Templates } = require("./interfaces");
 import Handlebars from "handlebars";
 import fs from 'fs'
 const debug = require('debug')('gnomad:common:renderer');
+import path from 'path'
 
 export interface I_Templates {
     path: string;
     templates?: string[];
 }
 
-export default class Renderer {
+export interface I_MyContext {
+    my: any;
+    meta: any;
+    env: any;
+}
+
+export default class Renderer<T> {
     cached: any = {}
     static idKeyName: string = "id";
 
@@ -32,18 +39,20 @@ export default class Renderer {
         });
 
         // special handling of 'id' key - ensure it's a slug
-        if (ctx[this.idKeyName])
+        if (this.idKeyName && ctx[this.idKeyName])
             ctx[this.idKeyName] = Renderer.slugify(ctx[this.idKeyName]);
     }
 
+    public cache(template: string): Function {
+        if (this.cached[template]) return this.cached[template]
+        const filename = path.join(this.templates.path, template);
+        const contents = fs.readFileSync(filename, 'utf-8');
+        return this.cached[template] = Handlebars.compile(contents);
+    }
+
     public template(template: string, ctx: any): string {
-        if (!this.cached[template]) {
-            const path = this.templates.path +"/"+ template;
-            const contents = fs.readFileSync(path, 'utf-8');
-            this.cached[template] = Handlebars.compile(contents);
-        }
-        let obj = {...Renderer.defaults(), ...ctx};
-        return this.cached[template](obj);
+        const compiled = this.cache(template);
+        return compiled(ctx);
     }
 
     static defaults() {
@@ -54,8 +63,8 @@ export default class Renderer {
     }
 
     public static text(template: string, ctx: any): string {
-        const cached = Handlebars.compile(template);
+        const compiled = Handlebars.compile(template);
         let obj = {...Renderer.defaults(), ...ctx};
-        return cached(obj);
+        return compiled(obj);
     }
 }

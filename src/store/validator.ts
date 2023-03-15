@@ -1,4 +1,4 @@
-const debug = require("debug")("fn:store:validator")
+const debug = require("debug")("gnomad:store:validator")
 
 import { I_Validator, I_Valid, I_Invalid } from "."
 
