@@ -1,7 +1,7 @@
 const { I_Templates } = require("./interfaces");
 import Handlebars from "handlebars";
 import fs from 'fs'
-const debug = require('debug')('persona:renderer');
+const debug = require('debug')('gnomad:common:renderer');
 
 export interface I_Templates {
     path: string;

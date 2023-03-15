@@ -1,4 +1,4 @@
-const debug = require('debug')('persona:utils');
+const debug = require('debug')('gnomad:common:matrix');
 import fetch from "node-fetch"
 
 export class Matrix<T> {
