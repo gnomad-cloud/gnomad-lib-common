@@ -1,16 +1,13 @@
-const debug = require("debug")("gnomad:events:ce")
+const debug = require("debug")("gnomad:events:mock")
 
-import { CloudEvent } from "cloudevents";
 import { I_CloudEvent, I_Broker } from ".";
 
 export class MockEventBroker implements I_Broker {
-    constructor() {
+    constructor(protected ns: string = "") {
     }
 
-    fire(event: I_CloudEvent): Promise<I_CloudEvent> {
-        const { id, type, source, data } = event;
-        const ce = new CloudEvent({ id, type, source, data }, true);
-        console.log("ce.mock: %o", ce);
+    fire(ce: I_CloudEvent): Promise<I_CloudEvent> {
+        debug("fire: %s -> %o", this.ns || "*", ce);
         return Promise.resolve( ce )
     }
 }

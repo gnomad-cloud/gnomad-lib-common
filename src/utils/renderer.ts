@@ -1,4 +1,3 @@
-const { I_Templates } = require("./interfaces");
 import Handlebars from "handlebars";
 import fs from 'fs'
 const debug = require('debug')('gnomad:common:renderer');
@@ -24,7 +23,7 @@ export default class Renderer<T> {
     }
 
     public static slugify(text: string): string {
-        return text.toLowerCase().replace(/[^a-zA-Z0-9-:_\./]/g, '_');
+        return text.toLowerCase().replace(/\W/g, '-')
     }
 
     public static nolines(text: string): string {
