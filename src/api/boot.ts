@@ -14,6 +14,7 @@ dotenv.config( { path: DOT_ENV_FILE, debug: true })
 console.log(".dotenv: %o -> %s", DOT_ENV_FILE, process.env.CE_BROKER)
 
 const S3_FOLDER = (process.env.S3_FOLDER || process.env.NODE_ENV || ".gnomad").toLowerCase();
+const CE_BROKER_NS = "https://coded.claims"
 
 export default function boot() {
     let config: I_S3Store = { 
@@ -26,7 +27,7 @@ export default function boot() {
     const store = new S3Store<I_CloudEvent>(config, S3_FOLDER);
     // new LocalFileStore(".local");
     const brokers = new ScopedEventBroker(new MockEventBroker());
-    brokers.add("https://coded.claims#", new MockEventBroker("https://coded.claims#"))
+    brokers.add(CE_BROKER_NS+"#", new MockEventBroker(CE_BROKER_NS+"#"))
     const broker = new ProxyBroker(store, brokers)
 
     const app = new Chassis(broker);
@@ -40,7 +41,7 @@ export default function boot() {
 
     app.start();
 
-    broker.fire( { id: "https://coded.claims/booted", type: "https://coded.claims#boot", source: "self", data: { hello: 'world' } })
+    broker.fire( { id: CE_BROKER_NS+"/booted", type: CE_BROKER_NS+"#boot", source: "https://gnomad.local/self", data: { hello: 'world' } })
     return { app }
 }
 

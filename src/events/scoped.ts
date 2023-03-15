@@ -21,15 +21,15 @@ export class ScopedEventBroker implements I_Broker {
         for(let ns in this.proxies) {
             if (ns == "*") {
                 this.proxies[ns].fire(event);
-                console.log("fire.all: %s -> %s", event.type, event.id)
+                debug("fire.all: %s -> %s", event.type, event.id)
             } else if (ns) {
                 if (event.type.startsWith(ns)) {
                     this.proxies[ns].fire(event);
-                    console.log("fire.type: %s -> %s -> %s", ns, event.type, event.id)
+                    debug("fire.type: %s -> %s -> %s", ns, event.type, event.id)
                 }
                 if (event.id.startsWith(ns)) {
                     this.proxies[ns].fire(event);
-                    console.log("fire.id: %s -> %s -> %s", ns, event.type, event.id)
+                    debug("fire.id: %s -> %s -> %s", ns, event.type, event.id)
                 }
             }
         }
