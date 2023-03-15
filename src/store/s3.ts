@@ -15,19 +15,19 @@ export class S3Store<T> extends AbstractFileStore<T> {
     }
 
     save(path: string, data: T): Promise<I_StoredFile<T>> {
-        console.log("store.s3.save: %s", path);
+        debug("save: %s", path);
         const saved = Promise.resolve(data);
         return Promise.resolve({ path: path, data: saved, status: 'created' })
     }
 
     load(path: string): Promise<I_StoredFile<T>> {
-        console.log("store.s3.load: %s", path);
+        debug("load: %s", path);
         const data = Promise.resolve({} as T);
         return Promise.resolve({ path: path, data, status: 'active' })
     }
 
     delete(path: string): Promise<I_StoredFile<T>> {
-        console.log("store.s3.save: %s", path);
+        debug("save: %s", path);
         const resolved = Promise.resolve({} as T);
         return Promise.resolve({ path: path, data: resolved, status: 'deleted' })
     }
