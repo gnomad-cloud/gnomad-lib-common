@@ -1,5 +1,6 @@
 import { parse } from 'yaml';
 import fs from 'fs';
+import Fault from './Fault';
 
 export default function(path: string): any {
 
@@ -8,7 +9,7 @@ export default function(path: string): any {
     try {
         configFile = fs.readFileSync(path, "utf-8");
     } catch(err) {
-        throw new Error("util:yaml:not-found:"+path);
+        throw new Fault("gnomad:util:yaml:not-found", {path});
     }
 
     // parse the contents and return our json

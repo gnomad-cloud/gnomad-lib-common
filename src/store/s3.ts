@@ -1,39 +1,34 @@
 const debug = require("debug")("fn:store:s3")
 
 import { I_Store, I_StoredFile } from ".";
+import { AbstractFileStore } from "./abstract";
 
-export class S3Store<T> implements I_Store<T> {
+export class S3Store<T> extends AbstractFileStore<T> {
 
     constructor(
         protected accessKey: string, 
         protected secretKey: string, 
         protected region: string, 
         protected basePath: string) {
+            super(basePath)
             // connect to S3
     }
 
-    find(path: string): Promise<I_StoredFile<T>> {
-         console.log("store.s3.find: %s", path);
-         const contents = Promise.resolve({} as T);
-         return Promise.resolve({ path: path, contents, status: 'active' })
-    }
-
-    save(path: string, contents: T): Promise<I_StoredFile<T>> {
+    save(path: string, data: T): Promise<I_StoredFile<T>> {
         console.log("store.s3.save: %s", path);
-        const saved = Promise.resolve(contents);
-        return Promise.resolve({ path: path, contents: saved, status: 'created' })
+        const saved = Promise.resolve(data);
+        return Promise.resolve({ path: path, data: saved, status: 'created' })
     }
 
     load(path: string): Promise<I_StoredFile<T>> {
         console.log("store.s3.load: %s", path);
-        const contents = Promise.resolve({} as T);
-        return Promise.resolve({ path: path, contents, status: 'active' })
+        const data = Promise.resolve({} as T);
+        return Promise.resolve({ path: path, data, status: 'active' })
     }
 
     delete(path: string): Promise<I_StoredFile<T>> {
         console.log("store.s3.save: %s", path);
         const resolved = Promise.resolve({} as T);
-        return Promise.resolve({ path: path, contents: resolved, status: 'deleted' })
+        return Promise.resolve({ path: path, data: resolved, status: 'deleted' })
     }
-
 }

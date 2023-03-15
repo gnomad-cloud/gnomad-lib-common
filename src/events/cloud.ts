@@ -3,7 +3,7 @@ const debug = require("debug")("fn:events:ce")
 import { httpTransport, emitterFor, CloudEvent } from "cloudevents";
 import { I_CloudEvent, I_Broker } from ".";
 
-export class EventBroker implements I_Broker {
+export class CloudEventBroker implements I_Broker {
     emit: Function;
 
     constructor() {

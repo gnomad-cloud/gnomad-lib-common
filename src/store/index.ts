@@ -1,6 +1,6 @@
 export interface I_StoredFile<T> {
     path: string
-    contents: Promise<T>;
+    data: Promise<T>;
     status: "created"  | "active" | "retained" | "deleted"
 }
 

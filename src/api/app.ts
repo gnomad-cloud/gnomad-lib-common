@@ -1,7 +1,6 @@
 import express, { Application, Express } from 'express';
-import dotenv from 'dotenv';
 import yaml from '../utils/yaml';
-import { I_Broker, EventBroker } from '../events';
+import { CloudEventBroker, I_Broker, MockEventBroker } from '../events';
 
 export interface I_AppContext {
     config: I_Config;
@@ -24,21 +23,19 @@ export interface I_Config {
 export default class Chassis {
     ctx: I_AppContext | null = null;
 
-    constructor() {
+    constructor(protected broker?: I_Broker) {
+        this.broker = this.broker || new CloudEventBroker();
         this.boot();
     }
 
     protected boot() {
-        dotenv.config();
-
         // load config from yaml
         const configFile = process.env.GNOMAD_YAML_PATH || "gnomad.yaml"
         const config = yaml(configFile) as I_Config;
 
         const router: Express = express();
-        const events = new EventBroker();
         // boot app context
-        this.ctx = { config, router, events } as I_AppContext;
+        this.ctx = { config, router, events: this.broker } as I_AppContext;
     }
 
     _assert_booted() {
