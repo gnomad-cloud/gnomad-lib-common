@@ -1,6 +1,6 @@
 import Chassis from "./api/app";
-import GenericAPI from "./plugins/generic";
-import ProtectedRoutes from "./plugins/harden";
+import GenericAPI from "./api/plugins/generic";
+import ProtectedRoutes from "./api/plugins/harden";
 import yaml from "./utils/yaml"
 export { Chassis, yaml, GenericAPI, ProtectedRoutes }
 export { I_Store, I_StoredFile, S3Store, LocalFileStore } from "./store";

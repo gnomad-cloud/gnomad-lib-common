@@ -2,7 +2,6 @@ const debug = require("debug")("fn:auth:keycloak")
 
 import KeycloakAdminClient from "@keycloak/keycloak-admin-client";
 import GroupRepresentation from "@keycloak/keycloak-admin-client/lib/defs/groupRepresentation";
-import { group } from "console";
 import { I_Authenticator, I_Entitlement, I_JWT } from ".";
 
 const KEYCLOAK_URL = process.env.KEYCLOAK_URL || "";
@@ -13,8 +12,7 @@ const KEYCLOAK_CLIENT_SECRET = process.env.KEYCLOAK_CLIENT_SECRET || "";
 if (!KEYCLOAK_CLIENT_ID || !KEYCLOAK_CLIENT_SECRET) throw new Error("missing KEYCLOAK_CLIENT_ID or KEYCLOAK_CLIENT_SECRET");
 debug("keycloak.client: %s -> %s", KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET ? true : false)
 
-//  implements I_Authenticator
-export class KeycloakAuthenticator implements I_Entitlement{
+export class KeycloakAuthenticator implements I_Entitlement, I_Authenticator {
     
     api: KeycloakAdminClient;
     
@@ -23,7 +21,7 @@ export class KeycloakAuthenticator implements I_Entitlement{
             baseUrl: KEYCLOAK_URL,
             realmName: realm,
         });
-        this.connect();
+        if (KEYCLOAK_URL) this.connect();
     }
 
     async grant(jwt: I_JWT, permission: string) {
@@ -47,16 +45,23 @@ export class KeycloakAuthenticator implements I_Entitlement{
     }
 
     allowed(jwt: I_JWT, permission: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        if (jwt==null||!jwt.sub) return Promise.resolve(false);
+        const now = Date.now();
+        if (jwt.nbf<now) return Promise.resolve(false);
+        // TODO: implement authentication checks
+        return Promise.resolve(true);
     }
 
-    async connect() {
-        return this.api.auth({
+    async connect(): Promise<I_Authenticator> {
+        this.api.auth({
             grantType: 'client_credentials',
             clientId: KEYCLOAK_CLIENT_ID,
             clientSecret: KEYCLOAK_CLIENT_SECRET,
         });
         return this;
+    }
+
+    disconnect(): void {
     }
 
     async addToGroup(_group: string, _user: string) {
@@ -114,4 +119,3 @@ export class KeycloakAuthenticator implements I_Entitlement{
     }
 }
 
-export { I_Authenticator };

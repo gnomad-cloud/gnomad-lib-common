@@ -1,5 +1,6 @@
 export interface I_Authenticator {
-    connect(): void;
+    connect(): Promise<I_Authenticator>
+    disconnect(): void;
 }
 
 export interface I_Guard {

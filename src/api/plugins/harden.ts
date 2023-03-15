@@ -1,4 +1,4 @@
-import { I_AppContext, I_Plugin } from "../api/app";
+import { I_AppContext, I_Plugin } from "../app";
 import helmet from 'helmet';
 import cors from 'cors';
 
