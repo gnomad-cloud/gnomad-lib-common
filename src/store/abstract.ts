@@ -1,6 +1,7 @@
 const debug = require("debug")("fn:store:local")
 import path from "path"
-import fs from "fs";
+//import fs from "fs";
+import { createHash } from 'node:crypto'
 
 import { I_Store, I_StoredFile } from ".";
 
@@ -11,6 +12,12 @@ export abstract class AbstractFileStore<T> implements I_Store<T> {
 
     constructor(protected basePath: string = ".local") {
     }
+
+
+    fingerprint(content: string) {
+        return createHash('sha256').update(content).digest('hex')
+    }
+
 
     resolve(file: string): string {
         return path.join(this.basePath, file + "." + this.FILE_TYPE);
