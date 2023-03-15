@@ -1,4 +1,4 @@
-const debug = require("debug")("gnomad:events:broker")
+const debug = require("debug")("gnomad:events:scoped")
 
 import { I_CloudEvent, I_Broker } from ".";
 import { I_Store } from "../store";
@@ -13,6 +13,7 @@ export class ScopedEventBroker implements I_Broker {
     }
 
     add(name: string, proxy: I_Broker): void {
+        name = name || "*";
         this.proxies[name] = proxy;
     }
 
