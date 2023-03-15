@@ -27,7 +27,7 @@ export default function boot() {
 
     app.start();
 
-    broker.fire( { id: "self", type: "boot", source: "self", data: { hello: 'world' } })
+    broker.fire( { id: "https://coded.claims/booted", type: "https://coded.claims#boot", source: "self", data: { hello: 'world' } })
     return { app }
 }
 

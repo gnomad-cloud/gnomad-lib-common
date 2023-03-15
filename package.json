@@ -21,7 +21,7 @@
     "start": "node dist/index.js",
     "test": "echo 'no tests' && exit 0",
     "dev": "export NODE_ENV=local && npx tsc && node dist/api/boot.js",
-    "devw": "set NODE_ENV=local && npx tsc && node dist/api/boot.js"
+    "devw": "set DEBUG=* && set NODE_ENV=local && npx tsc && node dist/api/boot.js"
   },
   "dependencies": {
     "@keycloak/keycloak-admin-client": "^21.0.1",

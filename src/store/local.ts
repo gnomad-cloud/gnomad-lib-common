@@ -15,18 +15,13 @@ export class LocalFileStore<T> extends AbstractFileStore<T> {
         super(basePath)
     }
 
-    resolve(file: string): string {
-        const filename = path.join(this.basePath, file);
-        return filename;
-    }
-
     async save(file: string, contents: T): Promise<I_StoredFile<T>> {
         const folder = this.resolve(file);
         const data = this.serializer(contents);
         const key = this.fingerprint(data);
         const filename = path.join(folder, key + "."+this.FILE_TYPE);
         const latest = path.join(folder, "latest."+this.FILE_TYPE);
-        debug("save: %s --> %", folder, filename);
+        debug("save: %s", filename);
 
         await mkdirp(folder)
         fs.writeFileSync(filename, data);

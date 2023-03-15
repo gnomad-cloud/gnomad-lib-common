@@ -20,6 +20,9 @@ export abstract class AbstractFileStore<T> implements I_Store<T> {
 
 
     resolve(file: string): string {
+        const ix = file.indexOf("://");
+        if (ix>=0) file = file.substring(ix+3);
+        // console. log("resolve: %s -> %s", ix, file)
         return path.join(this.basePath, file + "." + this.FILE_TYPE);
     }
 
