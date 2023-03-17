@@ -1,11 +1,9 @@
 import { I_AppContext, I_Plugin } from "../app";
 import { Request, Response } from "express";
 import Fault from "../../utils/Fault";
-import { LocalFileStore } from "../../store";
-import { I_Broker, ProxyBroker } from "../../events";
-import { MockEventBroker } from "../../events/mock";
 import { PDFRender } from "../../render/pdf";
 const debug = require("debug")("gnomad:plugin:pdf")
+import path from "path";
 
 export default class PDFPlugin implements I_Plugin {
 
@@ -29,7 +27,7 @@ export default class PDFPlugin implements I_Plugin {
                 const filename = template+"_"+Date.now()+".pdf";
                 try {
                     await pdf.render(template, payload, filename);
-                    res.status(200).sendFile(filename);
+                    res.status(200).sendFile(path.join(process.cwd(),filename));
                 } catch(e: any) {
                     res.status(500).send( { message: "pdf.fault", error: e.message.toString(), template, filename});
                 }
