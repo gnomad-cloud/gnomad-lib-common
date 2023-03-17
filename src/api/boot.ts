@@ -3,7 +3,7 @@ import GenericAPIPlugin from "./plugins/generic";
 import HardenAPIsPlugin from "./plugins/harden";
 import EventsPlugin from "./plugins/events";
 import { ProxyBroker, MockEventBroker, I_CloudEvent } from "../events";
-import { LocalFileStore, S3Store } from "../store";
+import { S3Store } from "../store";
 import dotenv from 'dotenv';
 import path from 'path'
 import { I_S3Store } from "../store/s3";

@@ -4,7 +4,7 @@ import { CreateBucketCommand, GetObjectCommand, HeadBucketCommand, PutObjectComm
 import { I_Store, I_StoredFile } from ".";
 import { AbstractFileStore } from "./abstract";
 import path from "path"
-import Renderer from "../utils/renderer";
+import Renderer from "../render/template";
 import { I_CloudEvent } from "../events";
 
 export interface I_S3Store {
