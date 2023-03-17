@@ -8,23 +8,29 @@ import dotenv from 'dotenv';
 import path from 'path'
 import { I_S3Store } from "../store/s3";
 import { ScopedEventBroker } from "../events/scoped";
+import PDFPlugin from "./plugins/pdf";
+const debug = require("debug")("gnomad:api:boot")
+import yaml from "../utils/yaml";
 
 const DOT_ENV_FILE = path.join(process.cwd(),".env."+process.env.NODE_ENV?.trim())
 dotenv.config( { path: DOT_ENV_FILE, debug: true })
 console.log(".dotenv: %o -> %s", DOT_ENV_FILE, process.env.CE_BROKER)
 
 const S3_FOLDER = (process.env.S3_FOLDER || process.env.NODE_ENV || ".gnomad").toLowerCase();
-const CE_BROKER_NS = "https://coded.claims"
+const CE_BROKER_NS = process.env.CE_BROKER_NS || "https://coded.claims"
 
 export default async function boot() {
-    let config: I_S3Store = { 
+    const config = yaml("gnomad.yaml")
+    let s3_config: I_S3Store = { 
+        ...config.s3,
         endpoint: process.env.S3_ENDPOINT || "", 
         accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
         secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
         region: process.env.S3_REGION || "us-east-1",
         bucket: process.env.S3_BUCKET || S3_FOLDER
     }
-    const store = new S3Store<I_CloudEvent>(config, S3_FOLDER);
+
+    const store = new S3Store<I_CloudEvent>(s3_config, S3_FOLDER);
     // new LocalFileStore(".local");
     const brokers = new ScopedEventBroker(new MockEventBroker());
     brokers.add(CE_BROKER_NS+"#", new MockEventBroker(CE_BROKER_NS+"#"))
@@ -35,9 +41,10 @@ export default async function boot() {
 
     // register plugins
 
-    app.install(new GenericAPIPlugin());
-    app.install(new HardenAPIsPlugin());
-    app.install(new EventsPlugin());
+    app.install(new GenericAPIPlugin( ));
+    app.install(new HardenAPIsPlugin( ));
+    app.install(new EventsPlugin( ));
+    app.install(new PDFPlugin());
 
     app.start();
 

@@ -9,3 +9,7 @@ events:
 schema:
   registry:
   - ./schemas/
+pdf:
+  path: "./test/"
+  templates:
+  - ./test/

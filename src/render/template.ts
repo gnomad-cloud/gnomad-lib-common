@@ -1,6 +1,6 @@
 import Handlebars from "handlebars";
 import fs from 'fs'
-const debug = require('debug')('gnomad:common:renderer');
+const debug = require('debug')('gnomad:render:template');
 import path from 'path'
 
 export interface I_Templates {
@@ -45,12 +45,14 @@ export default class Renderer<T> {
     public cache(template: string): Function {
         if (this.cached[template]) return this.cached[template]
         const filename = path.join(this.templates.path, template);
+        debug("cache: %o", { template, filename, path: this.templates.path });
         const contents = fs.readFileSync(filename, 'utf-8');
         return this.cached[template] = Handlebars.compile(contents);
     }
 
     public template(template: string, ctx: any): string {
         const compiled = this.cache(template);
+        debug("template: %o", { template, ctx });
         return compiled(ctx);
     }
 

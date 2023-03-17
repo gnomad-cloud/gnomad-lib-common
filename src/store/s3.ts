@@ -16,21 +16,30 @@ export interface I_S3Store {
 }
 export class S3Store<T extends I_CloudEvent> extends AbstractFileStore<T> {
     client: S3;
+    config: I_S3Store;
 
-    constructor(protected config: I_S3Store, basePath: string) {
+    constructor(protected _config: I_S3Store, basePath: string) {
         super(basePath)
-        // debug("config: %s -> %o", basePath, config);
         // connect to S3
+        this.config = { 
+            endpoint: process.env.S3_ENDPOINT || "", 
+            accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
+            region: process.env.S3_REGION || "us-east-1",
+            bucket: process.env.S3_BUCKET || basePath
+        }
+        debug("config: %s -> %o", basePath, this.config);
+
         this.client = new S3({
             forcePathStyle: false, // Configures to use subdomain/virtual calling format.
-            endpoint: config.endpoint,
-            region: config.region,
+            endpoint: this.config.endpoint,
+            region: this.config.region,
             credentials: {
-                accessKeyId: config.accessKeyId,
-                secretAccessKey: config.secretAccessKey
+                accessKeyId: this.config.accessKeyId,
+                secretAccessKey: this.config.secretAccessKey
             }
         });
-        if (config.bucket) this.mkdir(config.bucket)
+        if (this.config.bucket) this.mkdir(this.config.bucket)
     }
 
     toPath(iri: string, type: string) {

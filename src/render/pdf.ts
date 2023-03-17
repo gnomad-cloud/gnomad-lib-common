@@ -2,21 +2,22 @@ import Renderer from "./template";
 
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const debug = require("debug")("gnomad:render:pdf")
 
 export class PDFRender {
     options;
 
     constructor(options?: Record<string, any>) {
         this.options = {
-            margin: { top: '100px', right: '50px', bottom: '200px', left: '50px' },
+            margin: options?.margin || { top: '100px', right: '50px', bottom: '200px', left: '50px' },
             printBackground: false,
-            format: 'Legal',
+            format: options?.format || 'Legal',
             render: {
-                path: ".",
-                templates: ["./templates/"]
-            },
-            ...options
+                path: options?.path || ".",
+                templates: options?.templates || ["./templates/"]
+            }
         }
+        debug("config: %o --> %o", this.options, options);
     }
 
     async render(template: string, ctx: Record<string, any>, filename: string): Promise<any> {
@@ -30,6 +31,7 @@ export class PDFRender {
         const page = await browser.newPage();
         await page.setContent(html, { waitUntil: 'domcontentloaded' });
         await page.emulateMediaType('screen');
+        debug("generate: %o", { filename });
         const pdf = await page.pdf({
             path: filename,
             ...this.options
