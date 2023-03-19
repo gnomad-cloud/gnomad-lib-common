@@ -3,4 +3,4 @@ name: hello-world
 ---
 # Hello world
 
-## how are you
+## how are you, {{now}}
