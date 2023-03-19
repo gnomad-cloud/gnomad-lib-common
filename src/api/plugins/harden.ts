@@ -1,7 +1,7 @@
 import { I_AppContext, I_Plugin } from "../app";
 import helmet from 'helmet';
 import cors from 'cors';
-const debug = require("debug")("gnomad:plugin:harden")
+const debug = require("debug")("gnomad:plugin:hardeny")
 
 export default class ProtectedRoutes implements I_Plugin {
 

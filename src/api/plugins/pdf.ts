@@ -4,6 +4,7 @@ import Fault from "../../utils/Fault";
 import { PDFRender } from "../../render/pdf";
 const debug = require("debug")("gnomad:plugin:pdf")
 import path from "path";
+import { PDFMarkdownRender } from "../../render/pdf-md";
 
 export default class PDFPlugin implements I_Plugin {
 
@@ -18,18 +19,18 @@ export default class PDFPlugin implements I_Plugin {
         ctx.router.post("/pdf/:template", async (req: Request, res: Response, next: Function) => {
             debug("api: %j -> %j", req.headers, req.body);
 
-            const pdf = new PDFRender(config);
+            const pdf = new PDFMarkdownRender(config);
             const payload = { my: req.body || {}, meta: {
                 headers: req.headers
             } }
             if (req.params.template) {
-                const template = req.params.template+".$.html"
-                const filename = template+"_"+Date.now()+".pdf";
+                const templateFile = req.params.template+".$.md"
+                const pdfFile = templateFile+"_"+Date.now()+".pdf";
                 try {
-                    await pdf.render(template, payload, filename);
-                    res.status(200).sendFile(path.join(process.cwd(),filename));
+                    await pdf.render(templateFile, payload, pdfFile);
+                    res.status(200).sendFile(path.join(process.cwd(), pdfFile));
                 } catch(e: any) {
-                    res.status(500).send( { message: "pdf.fault", error: e.message.toString(), template, filename});
+                    res.status(500).send( { message: "pdf.fault", error: e.message.toString(), templateFile, pdfFile});
                 }
             } else {
                 res.status(404).send({ message: "pdf.template.missing", params: req.params});

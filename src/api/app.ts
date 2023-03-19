@@ -50,10 +50,10 @@ export default class Chassis {
 
     start() {
         this._assert_booted();
-        const port = process.env.PORT || 3000;
+        const port = process.env.PORT || 3001;
         // start serving ...
         this.ctx?.router.listen(port, () => {
-            console.log(`chassis.api on port ${port}`);
+            console.log(`app.api on port ${port}`);
         });
     }
 }

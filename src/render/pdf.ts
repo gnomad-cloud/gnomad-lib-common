@@ -5,7 +5,7 @@ const fs = require('fs');
 const debug = require("debug")("gnomad:render:pdf")
 
 export class PDFRender {
-    options;
+    options: Record<string, any>;
 
     constructor(options?: Record<string, any>) {
         this.options = {
