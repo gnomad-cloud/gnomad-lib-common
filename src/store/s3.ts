@@ -6,6 +6,7 @@ import { AbstractFileStore } from "./abstract";
 import path from "path"
 import Renderer from "../render/template";
 import { I_CloudEvent } from "../events";
+import { GenericIdentifier } from "./id/generic";
 
 export interface I_S3Store {
     endpoint: string
@@ -17,9 +18,11 @@ export interface I_S3Store {
 export class S3Store<T extends I_CloudEvent> extends AbstractFileStore<T> {
     client: S3;
     config: I_S3Store;
+    id: GenericIdentifier;
 
     constructor(protected _config: I_S3Store, basePath: string) {
         super(basePath)
+        this.id = new GenericIdentifier(basePath);
         // connect to S3
         this.config = { 
             endpoint: process.env.S3_ENDPOINT || "", 
@@ -42,19 +45,19 @@ export class S3Store<T extends I_CloudEvent> extends AbstractFileStore<T> {
         if (this.config.bucket) this.mkdir(this.config.bucket)
     }
 
-    toPath(iri: string, type: string) {
-        // iri = this.validateIRI(iri);
-        type = this.resolve(type)
-        return this.basePath+"/"+
-            this.resolve(iri)+"/"+
-            type+"."+this.FILE_TYPE;
-    }
+    // toPath(iri: string, type: string) {
+    //     // iri = this.validateIRI(iri);
+    //     type = this.resolve(type)
+    //     return this.basePath+"/"+
+    //         this.resolve(iri)+"/"+
+    //         type+"."+this.FILE_TYPE;
+    // }
 
-    resolve(iri: string): string {
-        let ix = iri.indexOf("://");
-        if (ix>=0) iri = iri.substring(ix+3);
-        return Renderer.slugify(iri);
-    }
+    // resolve(iri: string): string {
+    //     let ix = iri.indexOf("://");
+    //     if (ix>=0) iri = iri.substring(ix+3);
+    //     return Renderer.slugify(iri);
+    // }
 
     async mkdir(folder: string) {
         const bucketParams = { Bucket: folder };
@@ -94,18 +97,22 @@ export class S3Store<T extends I_CloudEvent> extends AbstractFileStore<T> {
     async save(file: string, contents: T): Promise<I_StoredFile<T>> {
         const data = this.serializer(contents);
         const key = this.fingerprint(data);
-        const filename = this.toPath(key, contents.type);
-        const latest = this.toPath(file, "latest")
-        debug("save: %s", latest, filename);
- 
+        const entity = this.id.tagged(key, contents.type);
         const any = contents as any;
-        const meta: any = any.type ? { id: filename, type: any.type, source: any.source } : { type: "gnomad/unknown" };
+        const meta: any = any.type ? { id: entity, type: any.type, source: any.source } : { type: "gnomad/unknown" };
 
-        const verified = await this.put(filename, data, meta)
+        debug("save: %s -> %o", entity, meta);
+        const saved = await this.put(entity, data, meta)
+
+        const dated = this.id.dated(meta.type)
+        const archived = await this.put(dated, data, meta)
+
+        const latest = this.id.tagged(meta.type, "latest")
         const cached = await this.put(latest, data, meta)
+
         // debug("verified: %s -> %o & %o", filename, verified, cached);
-        const saved = Promise.resolve(contents);
-        return Promise.resolve({ path: filename, data: saved, status: 'created' })
+        const done = Promise.resolve(contents);
+        return Promise.resolve({ path: entity, data: done, status: 'created' })
     }
 
     async load(filename: string): Promise<I_StoredFile<T>> {
