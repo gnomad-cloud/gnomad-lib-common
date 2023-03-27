@@ -51,10 +51,10 @@ export default async function boot() {
     const fired = await broker.fire( { id: CE_BROKER_NS+"/booted", type: CE_BROKER_NS+"#boot", source: "https://gnomad.local/self", data: { hello: 'world' } });
     console.log("event.fired: %o", fired);
 
-    const loaded = await store.load("cloud-events/67e64ace461d83cfae956b829b9ca44824f9bfc30c5a27ef47b96d6d51c6ae90/coded-claims-boot")
-    console.log("event.reloaded: %o", await loaded.data);
-    const deleted = await store.delete("cloud-events/coded-claims-boot/coded-claims-booted/67e64ace461d83cfae956b829b9ca44824f9bfc30c5a27ef47b96d6d51c6ae90")
-    console.log("event.deleted: %o", await deleted.data);
+    // const loaded = await store.load("cloud-events/67e64ace461d83cfae956b829b9ca44824f9bfc30c5a27ef47b96d6d51c6ae90/coded-claims-boot")
+    // console.log("event.reloaded: %o", await loaded.data);
+    // const deleted = await store.delete("cloud-events/coded-claims-boot/coded-claims-booted/67e64ace461d83cfae956b829b9ca44824f9bfc30c5a27ef47b96d6d51c6ae90")
+    // console.log("event.deleted: %o", await deleted.data);
     return { app }
 }
 

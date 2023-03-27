@@ -1,31 +1,32 @@
-import Renderer from "../../render/template";
+import HBSRenderer from "../../render/hbs";
 
 export class GenericIdentifier {
     FILE_TYPE: string = "json"
 
-    constructor(protected basePath: string = "") {
+    constructor() {
 
     }
 
-    dated(type: string, today: Date = new Date()) {
+    dated(type: string, key: string, today: Date = new Date()) {
         const tag = today.getFullYear()+"/"+(today.getMonth()+1)+"/"+today.getDate();
-        return this.tagged(type, tag)
+        return this.resolve(type)+"/"+tag+"/"+this.resolve(key)
     }
 
-    tagged(type: string, tag: string = "latest") {
-        return this.basePath+"/"+this.resolve(type)+"/"+tag
+    tagged(type: string, key: string, tag: string = "") {
+        return this.resolve(type)+
+            (tag?("/"+tag):"")+
+            "/"+this.resolve(key)
     }
 
-    typed(iri: string, type: string) {
-        const id = this.resolve(iri); 
-        const tag = id.substring(0,2)+"/"+ id+ "."+this.FILE_TYPE;
-        return this.tagged(type, tag);
+    key(key: string, type: string) {
+        return this.resolve(key)+"/"+this.resolve(type);
     }
 
     resolve(iri: string): string {
+        if (!iri) return "";
         let ix = iri.indexOf("://");
         if (ix>=0) iri = iri.substring(ix+3);
-        return Renderer.slugify(iri);
+        return HBSRenderer.slugify(iri);
     }
 
 }

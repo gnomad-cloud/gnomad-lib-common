@@ -15,8 +15,11 @@ export class LocalFileStore<T> extends AbstractFileStore<T> {
         super(basePath)
     }
 
-    async save(file: string, contents: T): Promise<I_StoredFile<T>> {
-        const folder = this.resolve(file);
+    async save(contents: T): Promise<I_StoredFile<T>> {
+        const _entity = contents as any;
+        if (!_entity||!_entity.id) return Promise.reject(this);
+
+        const folder = this.resolve(_entity.id);
         const data = this.serializer(contents);
         const key = this.fingerprint(data);
         const filename = path.join(folder, key + "."+this.FILE_TYPE);
@@ -27,7 +30,7 @@ export class LocalFileStore<T> extends AbstractFileStore<T> {
         fs.writeFileSync(filename, data);
         fs.writeFileSync(latest, this.serializer({ filename }));
 
-        const loaded = await this.load(file);
+        const loaded = await this.load(filename);
 //        debug("saved: %s --> %o", filename, await loaded.data);
         return Promise.resolve({ path: filename, data: loaded.data, status: 'created' })
     }

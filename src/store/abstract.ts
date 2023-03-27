@@ -38,7 +38,7 @@ export abstract class AbstractFileStore<T> implements I_Store<T> {
         return this.load(file);
     }
 
-    abstract save(file: string, contents: T): Promise<I_StoredFile<T>>;
+    abstract save(contents: T): Promise<I_StoredFile<T>>;
 
     abstract load(file: string): Promise<I_StoredFile<T>>;
 

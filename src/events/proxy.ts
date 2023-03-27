@@ -10,7 +10,7 @@ export class ProxyBroker implements I_Broker {
     }
 
     async fire(event: I_CloudEvent): Promise<unknown> {
-        await this.store.save( event.id, event )
+        this.store.save( event )
         return this.proxy.fire(event);
     }
 }

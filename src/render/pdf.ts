@@ -1,4 +1,4 @@
-import Renderer from "./template";
+import HBSRenderer from "./hbs";
 
 const puppeteer = require('puppeteer');
 const fs = require('fs');
@@ -21,7 +21,7 @@ export class PDFRender {
     }
 
     async render(template: string, ctx: Record<string, any>, filename: string): Promise<any> {
-        const render = new Renderer( this.options.render );
+        const render = new HBSRenderer( this.options.render );
         const html = await render.template(template, ctx);
         return this.generate(html, filename);
     }

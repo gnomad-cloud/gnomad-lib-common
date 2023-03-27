@@ -1,5 +1,5 @@
 import { PDFRender } from "./pdf";
-import Renderer from "./template";
+import HBSRenderer from "./hbs";
 
 const debug = require("debug")("gnomad:render:pdf:md")
 const fm = require('front-matter-markdown') 
@@ -25,7 +25,7 @@ export class PDFMarkdownRender extends PDFRender{
         const markdown = await this.load(filename);
         const json = fm(markdown);
         debug("render.md: %o ----> %o", markdown, JSON.stringify(json));
-        const text = await Renderer.text(json.content, ctx);
+        const text = await HBSRenderer.text(json.content, ctx);
         const html = this.md.render(text)
         debug("render.html: %o --> %o", html, ctx);
         return this.generate(html, pdf_filename);

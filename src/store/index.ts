@@ -8,7 +8,7 @@ export interface I_Store<T> {
 
     find(path: string): Promise<I_StoredFile<T>>
 
-    save(path: string, contents: T): Promise<I_StoredFile<T>>
+    save(contents: T): Promise<I_StoredFile<T>>
 
     load(path: string): Promise<I_StoredFile<T>>
 
